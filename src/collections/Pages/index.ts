@@ -56,6 +56,16 @@ export const Pages: CollectionConfig<'pages'> = {
         req,
       }),
     useAsTitle: 'title',
+    components: {
+      views: {
+        edit: {
+          root: {
+            Component: '@/components/Toolbar',
+          },
+        },
+      },
+      edit: {},
+    },
   },
   fields: [
     {

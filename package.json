@@ -93,6 +93,10 @@
       "sharp",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "patchedDependencies": {
+      "@payloadcms/ui@3.49.1": "patches/@payloadcms__ui@3.49.1.patch",
+      "@payloadcms/next@3.49.1": "patches/@payloadcms__next@3.49.1.patch"
+    }
   }
 }

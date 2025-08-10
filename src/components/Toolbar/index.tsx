@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { SaveDraftButton } from '../payload-ui/SaveDraftButton'
+import { SaveDraftButton } from '../payload-ui/elements/SaveDraftButton'
 
 // Context for passing selected state to children
 const ToolContext = React.createContext<{ selected: boolean }>({ selected: false })

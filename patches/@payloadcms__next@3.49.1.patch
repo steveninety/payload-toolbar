@@ -1,0 +1,41 @@
+diff --git a/package.json b/package.json
+index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb9023b56c8e 100644
+--- a/package.json
++++ b/package.json
+@@ -60,6 +60,36 @@
+       "import": "./dist/exports/views.js",
+       "types": "./dist/exports/views.d.ts",
+       "default": "./dist/exports/views.js"
++    },
++    "./views/*": {
++      "import": "./dist/views/*/index.js",
++      "types": "./dist/views/*/index.d.ts",
++      "default": "./dist/views/*/index.js"
++    },
++    "./views/*/*": {
++      "import": "./dist/views/*/*.js",
++      "types": "./dist/views/*/*.d.ts",
++      "default": "./dist/views/*/*.js"
++    },
++    "./utilities/*": {
++      "import": "./dist/utilities/*.js",
++      "types": "./dist/utilities/*.d.ts",
++      "default": "./dist/utilities/*.js"
++    },
++    "./utilities/*/*": {
++      "import": "./dist/utilities/*/*/index.js",
++      "types": "./dist/utilities/*/*/index.d.ts",
++      "default": "./dist/utilities/*/*/index.js"
++    },
++    "./elements/*": {
++      "import": "./dist/elements/*/index.js",
++      "types": "./dist/elements/*/index.d.ts",
++      "default": "./dist/elements/*/index.js"
++    },
++    "./elements/*/*": {
++      "import": "./dist/elements/*/*/index.js",
++      "types": "./dist/elements/*/*/index.d.ts",
++      "default": "./dist/elements/*/*/index.js"
+     }
+   },
+   "main": "./dist/index.js",

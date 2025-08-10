@@ -1,4 +1,5 @@
-// @import '../../scss/styles.scss';
+@import '~@payloadcms/ui/scss/vars.scss';
+@import '~@payloadcms/ui/scss/queries.scss';
 
 @layer payload-default {
   .collection-edit {
@@ -38,12 +39,25 @@
     &__form {
       height: 100%;
       width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      @media (min-width: 768px) {
+        flex-direction: row-reverse;
+      }
+
+      position: sticky;
     }
 
-    &__auth {
-      margin-bottom: base(1.6);
-      border-radius: var(--style-radius-s);
+    &__form-main {
+      width: 100%;
     }
+
+    // &__auth {
+    //   margin-bottom: base(1.6);
+    //   border-radius: var(--style-radius-s);
+    // }
 
     @include small-break {
       &__auth {

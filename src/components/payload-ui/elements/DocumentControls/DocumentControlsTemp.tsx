@@ -49,8 +49,8 @@ import {
 } from '@payloadcms/ui'
 import TB from '@/components/Toolbar'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { SaveDraftButton } from '@/components/payload-ui/SaveDraftButton'
-import { PublishButton } from '@/components/payload-ui/PublishButton'
+import { SaveDraftButton } from '@/components/payload-ui/elements/SaveDraftButton'
+import { PublishButton } from '@/components/payload-ui/elements/PublishButton'
 
 // import './index.scss'
 

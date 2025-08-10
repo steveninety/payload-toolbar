@@ -7,37 +7,36 @@ import { useRouter, useSearchParams } from 'next/navigation.js'
 import { formatAdminURL } from 'payload/shared'
 import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { FormProps } from '../../forms/Form/index.js'
-import type { LockedState } from '../../utilities/buildFormState.js'
+import type { FormProps } from '@payloadcms/ui'
+import type { LockedState } from '@payloadcms/ui/utilities/buildFormState'
 
-import { DocumentControls } from '../../elements/DocumentControls/index.js'
-import { DocumentDrawerHeader } from '../../elements/DocumentDrawer/DrawerHeader/index.js'
-import { useDocumentDrawerContext } from '../../elements/DocumentDrawer/Provider.js'
-import { DocumentFields } from '../../elements/DocumentFields/index.js'
-import { DocumentLocked } from '../../elements/DocumentLocked/index.js'
-import { DocumentTakeOver } from '../../elements/DocumentTakeOver/index.js'
-import { LeaveWithoutSaving } from '../../elements/LeaveWithoutSaving/index.js'
-import { LivePreviewWindow } from '../../elements/LivePreview/Window/index.js'
-import { Upload } from '../../elements/Upload/index.js'
-import { Form } from '../../forms/Form/index.js'
-import { useAuth } from '../../providers/Auth/index.js'
-import { useConfig } from '../../providers/Config/index.js'
-import { useDocumentEvents } from '../../providers/DocumentEvents/index.js'
-import { useDocumentInfo } from '../../providers/DocumentInfo/index.js'
-import { useEditDepth } from '../../providers/EditDepth/index.js'
-import { useLivePreviewContext } from '../../providers/LivePreview/context.js'
-import { OperationProvider } from '../../providers/Operation/index.js'
-import { useRouteTransition } from '../../providers/RouteTransition/index.js'
-import { useServerFunctions } from '../../providers/ServerFunctions/index.js'
-import { UploadControlsProvider } from '../../providers/UploadControls/index.js'
-import { useUploadEdits } from '../../providers/UploadEdits/index.js'
-import { abortAndIgnore, handleAbortRef } from '../../utilities/abortAndIgnore.js'
-import { handleBackToDashboard } from '../../utilities/handleBackToDashboard.js'
-import { handleGoBack } from '../../utilities/handleGoBack.js'
-import { handleTakeOver } from '../../utilities/handleTakeOver.js'
-import { Auth } from './Auth/index.js'
-import { SetDocumentStepNav } from './SetDocumentStepNav/index.js'
-import { SetDocumentTitle } from './SetDocumentTitle/index.js'
+import { DocumentControls } from '../../elements/DocumentControls'
+import { DocumentDrawerHeader } from '@payloadcms/ui/elements/DocumentDrawer/DrawerHeader'
+import { useDocumentDrawerContext } from '@payloadcms/ui'
+import { DocumentFields } from '@payloadcms/ui'
+import { DocumentLocked } from '@payloadcms/ui'
+import { DocumentTakeOver } from '@payloadcms/ui'
+import { LeaveWithoutSaving } from '@payloadcms/ui'
+import { LivePreviewWindow } from '@payloadcms/ui/elements/LivePreview/Window'
+import { Upload } from '@payloadcms/ui'
+import { Form } from '@payloadcms/ui'
+import { useAuth } from '@payloadcms/ui'
+import { useConfig } from '@payloadcms/ui'
+import { useDocumentEvents } from '@payloadcms/ui'
+import { useDocumentInfo } from '@payloadcms/ui'
+import { useEditDepth } from '@payloadcms/ui'
+import { useLivePreviewContext } from '@/components/payload-ui/providers/LivePreview/context'
+import { OperationProvider } from '@payloadcms/ui'
+import { useRouteTransition } from '@payloadcms/ui'
+import { useServerFunctions } from '@payloadcms/ui'
+import { UploadControlsProvider } from '@payloadcms/ui/providers/UploadControls'
+import { useUploadEdits } from '@payloadcms/ui'
+import { abortAndIgnore, handleAbortRef } from '@payloadcms/ui/utilities/abortAndIgnore'
+import { handleBackToDashboard } from '@payloadcms/ui/utilities/handleBackToDashboard'
+import { handleGoBack } from '@payloadcms/ui/utilities/handleGoBack'
+import { handleTakeOver } from '@payloadcms/ui/utilities/handleTakeOver'
+import { Auth } from '@payloadcms/ui/views/Edit/Auth'
+import { SetDocumentStepNav, SetDocumentTitle } from '@payloadcms/ui'
 import './index.scss'
 
 const baseClass = 'collection-edit'
@@ -107,6 +106,7 @@ export function DefaultEditView({
 
   const { refreshCookieAsync, user } = useAuth()
 
+  console.log('config', useConfig())
   const {
     config,
     config: {
@@ -483,63 +483,6 @@ export function DefaultEditView({
           onChange={[onChange]}
           onSuccess={onSave}
         >
-          {isInDrawer && (
-            <DocumentDrawerHeader drawerSlug={drawerSlug} showDocumentID={!isFolderCollection} />
-          )}
-          {isLockingEnabled && shouldShowDocumentLockedModal && (
-            <DocumentLocked
-              handleGoBack={() => handleGoBack({ adminRoute, collectionSlug, router })}
-              isActive={shouldShowDocumentLockedModal}
-              onReadOnly={() => {
-                setIsReadOnlyForIncomingUser(true)
-                setShowTakeOverModal(false)
-              }}
-              onTakeOver={() =>
-                handleTakeOver(
-                  id,
-                  collectionSlug,
-                  globalSlug,
-                  user,
-                  false,
-                  updateDocumentEditor,
-                  setCurrentEditor,
-                  documentLockState,
-                  isLockingEnabled,
-                )
-              }
-              updatedAt={lastUpdateTime}
-              user={currentEditor}
-            />
-          )}
-          {isLockingEnabled && showTakeOverModal && (
-            <DocumentTakeOver
-              handleBackToDashboard={() => handleBackToDashboard({ adminRoute, router })}
-              isActive={showTakeOverModal}
-              onReadOnly={() => {
-                setIsReadOnlyForIncomingUser(true)
-                setShowTakeOverModal(false)
-              }}
-            />
-          )}
-          {!isReadOnlyForIncomingUser && preventLeaveWithoutSaving && (
-            <LeaveWithoutSaving onConfirm={handleLeaveConfirm} onPrevent={handlePrevent} />
-          )}
-          {!isInDrawer && (
-            <SetDocumentStepNav
-              collectionSlug={collectionConfig?.slug}
-              globalSlug={globalConfig?.slug}
-              id={id}
-              isTrashed={isTrashed}
-              pluralLabel={collectionConfig?.labels?.plural}
-              useAsTitle={collectionConfig?.admin?.useAsTitle}
-            />
-          )}
-          <SetDocumentTitle
-            collectionConfig={collectionConfig}
-            config={config}
-            fallback={depth <= 1 ? id?.toString() : undefined}
-            globalConfig={globalConfig}
-          />
           <DocumentControls
             apiURL={apiURL}
             BeforeDocumentControls={BeforeDocumentControls}
@@ -586,73 +529,132 @@ export function DefaultEditView({
             slug={collectionConfig?.slug || globalConfig?.slug}
             user={currentEditor}
           />
-          <div
-            className={[
-              `${baseClass}__main-wrapper`,
-              previewWindowType === 'popup' && `${baseClass}--detached`,
-            ]
-              .filter(Boolean)
-              .join(' ')}
-          >
+          <div className={`${baseClass}__form-main`}>
+            {isInDrawer && (
+              <DocumentDrawerHeader drawerSlug={drawerSlug} showDocumentID={!isFolderCollection} />
+            )}
+            {isLockingEnabled && shouldShowDocumentLockedModal && (
+              <DocumentLocked
+                handleGoBack={() => handleGoBack({ adminRoute, collectionSlug, router })}
+                isActive={shouldShowDocumentLockedModal}
+                onReadOnly={() => {
+                  setIsReadOnlyForIncomingUser(true)
+                  setShowTakeOverModal(false)
+                }}
+                onTakeOver={() =>
+                  handleTakeOver(
+                    id,
+                    collectionSlug,
+                    globalSlug,
+                    user,
+                    false,
+                    updateDocumentEditor,
+                    setCurrentEditor,
+                    documentLockState,
+                    isLockingEnabled,
+                  )
+                }
+                updatedAt={lastUpdateTime}
+                user={currentEditor}
+              />
+            )}
+            {isLockingEnabled && showTakeOverModal && (
+              <DocumentTakeOver
+                handleBackToDashboard={() => handleBackToDashboard({ adminRoute, router })}
+                isActive={showTakeOverModal}
+                onReadOnly={() => {
+                  setIsReadOnlyForIncomingUser(true)
+                  setShowTakeOverModal(false)
+                }}
+              />
+            )}
+            {!isReadOnlyForIncomingUser && preventLeaveWithoutSaving && (
+              <LeaveWithoutSaving onConfirm={handleLeaveConfirm} onPrevent={handlePrevent} />
+            )}
+            {!isInDrawer && (
+              <SetDocumentStepNav
+                collectionSlug={collectionConfig?.slug}
+                globalSlug={globalConfig?.slug}
+                id={id}
+                isTrashed={isTrashed}
+                pluralLabel={collectionConfig?.labels?.plural}
+                useAsTitle={collectionConfig?.admin?.useAsTitle}
+              />
+            )}
+            <SetDocumentTitle
+              collectionConfig={collectionConfig}
+              config={config}
+              fallback={depth <= 1 ? id?.toString() : undefined}
+              globalConfig={globalConfig}
+            />
             <div
               className={[
-                `${baseClass}__main`,
-                previewWindowType === 'popup' && `${baseClass}__main--popup-open`,
+                `${baseClass}__main-wrapper`,
+                previewWindowType === 'popup' && `${baseClass}--detached`,
               ]
                 .filter(Boolean)
                 .join(' ')}
             >
-              <DocumentFields
-                AfterFields={AfterFields}
-                BeforeFields={
-                  BeforeFields || (
-                    <Fragment>
-                      {auth && (
-                        <Auth
-                          className={`${baseClass}__auth`}
-                          collectionSlug={collectionConfig.slug}
-                          disableLocalStrategy={collectionConfig.auth?.disableLocalStrategy}
-                          email={savedDocumentData?.email}
-                          loginWithUsername={auth?.loginWithUsername}
-                          operation={operation}
-                          readOnly={!hasSavePermission}
-                          requirePassword={!id}
-                          setValidateBeforeSubmit={setValidateBeforeSubmit}
-                          useAPIKey={auth.useAPIKey}
-                          username={savedDocumentData?.username}
-                          verify={auth.verify}
-                        />
-                      )}
-                      {upload && (
-                        <React.Fragment>
-                          <UploadControlsProvider>
-                            {CustomUpload || (
-                              <Upload
-                                collectionSlug={collectionConfig.slug}
-                                initialState={initialState}
-                                uploadConfig={upload}
-                                UploadControls={UploadControls}
-                              />
-                            )}
-                          </UploadControlsProvider>
-                        </React.Fragment>
-                      )}
-                    </Fragment>
-                  )
-                }
-                Description={Description}
-                docPermissions={docPermissions}
-                fields={docConfig.fields}
-                forceSidebarWrap={isLivePreviewing}
-                isTrashed={isTrashed}
-                readOnly={isReadOnlyForIncomingUser || !hasSavePermission || isTrashed}
-                schemaPathSegments={schemaPathSegments}
-              />
-              {AfterDocument}
+              <div
+                className={[
+                  `${baseClass}__main`,
+                  previewWindowType === 'popup' && `${baseClass}__main--popup-open`,
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <DocumentFields
+                  AfterFields={AfterFields}
+                  BeforeFields={
+                    BeforeFields || (
+                      <Fragment>
+                        {auth && (
+                          <Auth
+                            className={`${baseClass}__auth`}
+                            collectionSlug={collectionConfig.slug}
+                            disableLocalStrategy={collectionConfig.auth?.disableLocalStrategy}
+                            email={savedDocumentData?.email}
+                            loginWithUsername={auth?.loginWithUsername}
+                            operation={operation}
+                            readOnly={!hasSavePermission}
+                            requirePassword={!id}
+                            setValidateBeforeSubmit={setValidateBeforeSubmit}
+                            useAPIKey={auth.useAPIKey}
+                            username={savedDocumentData?.username}
+                            verify={auth.verify}
+                          />
+                        )}
+                        {upload && (
+                          <React.Fragment>
+                            <UploadControlsProvider>
+                              {CustomUpload || (
+                                <Upload
+                                  collectionSlug={collectionConfig.slug}
+                                  initialState={initialState}
+                                  uploadConfig={upload}
+                                  UploadControls={UploadControls}
+                                />
+                              )}
+                            </UploadControlsProvider>
+                          </React.Fragment>
+                        )}
+                      </Fragment>
+                    )
+                  }
+                  Description={Description}
+                  docPermissions={docPermissions}
+                  fields={docConfig.fields}
+                  forceSidebarWrap={isLivePreviewing}
+                  isTrashed={isTrashed}
+                  readOnly={isReadOnlyForIncomingUser || !hasSavePermission || isTrashed}
+                  schemaPathSegments={schemaPathSegments}
+                />
+                {AfterDocument}
+              </div>
+              {isLivePreviewEnabled && !isInDrawer && (
+                <LivePreviewWindow collectionSlug={collectionSlug} globalSlug={globalSlug} />
+              )}
             </div>
-            {isLivePreviewEnabled && !isInDrawer && (
-              <LivePreviewWindow collectionSlug={collectionSlug} globalSlug={globalSlug} />
-            )}
           </div>
         </Form>
       </OperationProvider>

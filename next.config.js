@@ -27,6 +27,15 @@ const nextConfig = {
       '.mjs': ['.mts', '.mjs'],
     }
 
+    // Handle ES module compatibility
+    webpackConfig.module.rules.push({
+      test: /\.js$/,
+      type: 'javascript/auto',
+      resolve: {
+        fullySpecified: false,
+      },
+    })
+
     return webpackConfig
   },
   reactStrictMode: true,

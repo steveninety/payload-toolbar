@@ -1,4 +1,4 @@
-import type { I18n } from '@payloadcms/translations'
+// import type { I18n } from '@payloadcms/translations'
 import type {
   PayloadRequest,
   SanitizedCollectionConfig,
@@ -9,8 +9,8 @@ import type {
 import { Gutter, RenderTitle } from '@payloadcms/ui'
 import React from 'react'
 
-import { DocumentTabs } from '@payloadcms/ui/elements/DocumentTabs'
-import './index.scss'
+import { DocumentTabs } from './Tabs'
+// import './index.scss'
 
 const baseClass = `doc-header`
 

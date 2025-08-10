@@ -1,3 +1,52 @@
+diff --git a/dist/views/Document/index.d.ts b/dist/views/Document/index.d.ts
+index d8062c5a9db43510a4db5ac723101204d8f39b14..a4ddc1b9d16142c1f6a856a726156f9679fad17d 100644
+--- a/dist/views/Document/index.d.ts
++++ b/dist/views/Document/index.d.ts
+@@ -1,6 +1,20 @@
+ import type { AdminViewServerProps, Data, DocumentViewClientProps, DocumentViewServerProps, EditViewComponent, PayloadComponent, RenderDocumentVersionsProperties } from 'payload';
+ import React from 'react';
+ import type { GenerateEditViewMetadata } from './getMetaBySegment.js';
++
++// Re-export all the functions
++export { getPreferences } from '../../utilities/getPreferences.js';
++export { NotFoundView } from '../NotFound/index.js';
++export { getCustomViewByKey } from './getCustomViewByKey.js';
++export { getCustomViewByRoute } from './getCustomViewByRoute.js';
++export { getDocPreferences } from './getDocPreferences.js';
++export { getDocumentData } from './getDocumentData.js';
++export { getDocumentPermissions } from './getDocumentPermissions.js';
++export { getDocumentView } from './getDocumentView.js';
++export { getIsLocked } from './getIsLocked.js';
++export { getMetaBySegment } from './getMetaBySegment.js';
++export { getVersions } from './getVersions.js';
++export { renderDocumentSlots } from './renderDocumentSlots.js';
+ export declare const generateMetadata: GenerateEditViewMetadata;
+ export type ViewToRender = EditViewComponent | PayloadComponent<DocumentViewServerProps> | React.FC | React.FC<DocumentViewClientProps>;
+ /**
+diff --git a/dist/views/Document/index.js b/dist/views/Document/index.js
+index a5f828901721491db41b8190e2ab9491caa71b29..3862f9793f4513a9a6f7c9d398ae3ab5b03b0b44 100644
+--- a/dist/views/Document/index.js
++++ b/dist/views/Document/index.js
+@@ -10,6 +10,8 @@ import React from 'react';
+ import { DocumentHeader } from '../../elements/DocumentHeader/index.js';
+ import { getPreferences } from '../../utilities/getPreferences.js';
+ import { NotFoundView } from '../NotFound/index.js';
++import { getCustomViewByKey } from './getCustomViewByKey.js';
++import { getCustomViewByRoute } from './getCustomViewByRoute.js';
+ import { getDocPreferences } from './getDocPreferences.js';
+ import { getDocumentData } from './getDocumentData.js';
+ import { getDocumentPermissions } from './getDocumentPermissions.js';
+@@ -18,6 +20,10 @@ import { getIsLocked } from './getIsLocked.js';
+ import { getMetaBySegment } from './getMetaBySegment.js';
+ import { getVersions } from './getVersions.js';
+ import { renderDocumentSlots } from './renderDocumentSlots.js';
++
++// Re-export all the imported functions
++export { getPreferences, NotFoundView };
++export { getCustomViewByKey, getCustomViewByRoute, getDocPreferences, getDocumentData, getDocumentPermissions, getDocumentView, getIsLocked, getMetaBySegment, getVersions, renderDocumentSlots };
+ export const generateMetadata = async args => getMetaBySegment(args);
+ /**
+  * This function is responsible for rendering
 diff --git a/package.json b/package.json
 index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb9023b56c8e 100644
 --- a/package.json

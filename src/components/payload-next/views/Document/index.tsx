@@ -25,20 +25,22 @@ import { logError } from 'payload'
 import { formatAdminURL } from 'payload/shared'
 import React from 'react'
 
-import type { GenerateEditViewMetadata } from '@payloadcms/next'
+import type { GenerateEditViewMetadata } from '@payloadcms/next/views/Document'
 
 import {
   getPreferences,
   NotFoundView,
-} from '@payloadcms/next'
-import { getDocPreferences } from '@payloadcms/next/views/Document/getDocPreferences'
-import { getDocumentData } from '@payloadcms/next/views/Document/getDocumentData'
-import { getDocumentPermissions } from '@payloadcms/next/views/Document/getDocumentPermissions'
-import { getDocumentView } from '@payloadcms/next/views/Document/getDocumentView'
-import { getIsLocked } from '@payloadcms/next/views/Document/getIsLocked'
-import { getMetaBySegment } from '@payloadcms/next/views/Document/getMetaBySegment'
-import { getVersions } from '@payloadcms/next/views/Document/getVersions'
-import { renderDocumentSlots } from '@payloadcms/next/views/Document/renderDocumentSlots'
+  getDocPreferences,
+  getDocumentData,
+  getDocumentPermissions,
+  getIsLocked,
+  getMetaBySegment,
+  getVersions,
+  renderDocumentSlots,
+} from '@payloadcms/next/views/Document'
+import { getDocumentView } from './getDocumentView'
+import { DocumentHeader } from '../../elements/DocumentHeader'
+import { DocumentTabs } from '../../elements/DocumentHeader/Tabs'
 
 export const generateMetadata: GenerateEditViewMetadata = async (args) => getMetaBySegment(args)
 
@@ -101,6 +103,8 @@ export const renderDocument = async ({
     },
     visibleEntities,
   } = initPageResult
+
+  console.log('renderDocument')
 
   const segments = Array.isArray(params?.segments) ? params.segments : []
   const collectionSlug = collectionConfig?.slug || undefined
@@ -256,27 +260,29 @@ export const renderDocument = async ({
 
   let showHeader = true
 
-  const RootViewOverride =
-    collectionConfig?.admin?.components?.views?.edit?.root &&
-    'Component' in collectionConfig.admin.components.views.edit.root
-      ? collectionConfig?.admin?.components?.views?.edit?.root?.Component
-      : globalConfig?.admin?.components?.views?.edit?.root &&
-          'Component' in globalConfig.admin.components.views.edit.root
-        ? globalConfig?.admin?.components?.views?.edit?.root?.Component
-        : null
+  // --- DO NOT USE ---
+  // --- Causes infine loop b/c THIS is the root view we provide, not EditView ---
+  // const RootViewOverride =
+  //   collectionConfig?.admin?.components?.views?.edit?.root &&
+  //   'Component' in collectionConfig.admin.components.views.edit.root
+  //     ? collectionConfig?.admin?.components?.views?.edit?.root?.Component
+  //     : globalConfig?.admin?.components?.views?.edit?.root &&
+  //         'Component' in globalConfig.admin.components.views.edit.root
+  //       ? globalConfig?.admin?.components?.views?.edit?.root?.Component
+  //       : null
 
-  if (RootViewOverride) {
-    View = RootViewOverride
-    showHeader = false
-  } else {
-    ;({ View } = getDocumentView({
-      collectionConfig,
-      config,
-      docPermissions,
-      globalConfig,
-      routeSegments: segments,
-    }))
-  }
+  // if (RootViewOverride) {
+  // View = RootViewOverride
+  // showHeader = false
+  // } else {
+  ;({ View } = getDocumentView({
+    collectionConfig,
+    config,
+    docPermissions,
+    globalConfig,
+    routeSegments: segments,
+  }))
+  // }
 
   if (!View) {
     View = NotFoundView
@@ -339,6 +345,7 @@ export const renderDocument = async ({
     ...documentSlots,
     documentSubViewType,
     viewType,
+    // req,
   }
 
   const isLivePreviewEnabled = Boolean(
@@ -371,6 +378,17 @@ export const renderDocument = async ({
           })
         : livePreviewConfig?.url
       : ''
+
+  console.log({ View })
+
+  const DocumentTabsServer = () => (
+    <DocumentTabs
+      collectionConfig={collectionConfig}
+      globalConfig={globalConfig}
+      permissions={permissions}
+      req={req}
+    />
+  )
 
   return {
     data: doc,
@@ -409,9 +427,8 @@ export const renderDocument = async ({
             <DocumentHeader
               collectionConfig={collectionConfig}
               globalConfig={globalConfig}
-              i18n={i18n}
-              payload={payload}
               permissions={permissions}
+              req={req}
             />
           )}
           <HydrateAuthProvider permissions={permissions} />
@@ -421,6 +438,7 @@ export const renderDocument = async ({
               Component: View,
               importMap,
               serverProps: documentViewServerProps,
+              tabsComponent: 
             })}
           </EditDepthProvider>
         </LivePreviewProvider>
@@ -429,9 +447,15 @@ export const renderDocument = async ({
   }
 }
 
-export async function Document(props: AdminViewServerProps) {
+async function Document(props: AdminViewServerProps) {
+  // console.log({ props })
+  // const document = await renderDocument(props)
+  // return <div>Document</div>
   try {
+    console.log('will render document')
     const { Document: RenderedDocument } = await renderDocument(props)
+    console.log({ RenderedDocument })
+
     return RenderedDocument
   } catch (error) {
     if (error?.message === 'NEXT_REDIRECT') {
@@ -445,3 +469,5 @@ export async function Document(props: AdminViewServerProps) {
     }
   }
 }
+
+export default Document

@@ -2,6 +2,7 @@
 import type {
   ClientUser,
   Data,
+  PayloadRequest,
   SanitizedCollectionConfig,
   SanitizedCollectionPermission,
   SanitizedGlobalPermission,
@@ -55,6 +56,7 @@ import { RestoreButton } from '@payloadcms/ui/elements/RestoreButton'
 import './index.scss'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import TB from '@/components/Toolbar'
+import { DocumentTabs } from '@/components/payload-next/elements/DocumentHeader/Tabs'
 
 const baseClass = 'doc-controls'
 
@@ -224,6 +226,14 @@ export const DocumentControls: React.FC<{
               </Fragment>
             )}
             <SaveDraftButton />
+            {/* {!hideTabs && ( */}
+            {/* <DocumentTabs
+              collectionConfig={collectionConfig}
+              globalConfig={globalConfig}
+              permissions={permissions}
+              req={req}
+            /> */}
+            {/* )} */}
             <PublishButton />
             <PublishButton />
             <PublishButton />

@@ -10,13 +10,13 @@ import type React from 'react'
 
 import type { ViewToRender } from './'
 
-import { APIView as DefaultAPIView } from '@payloadcms/next'
+import { APIView as DefaultAPIView } from '@payloadcms/next/views/API'
 import { DefaultEditView } from '../../../payload-ui/views/Edit'
-import { UnauthorizedViewWithGutter } from '../Unauthorized/index.js'
-import { VersionView as DefaultVersionView } from '../Version/index.js'
-import { VersionsView as DefaultVersionsView } from '../Versions/index.js'
-import { getCustomViewByKey } from './getCustomViewByKey.js'
-import { getCustomViewByRoute } from './getCustomViewByRoute.js'
+import { UnauthorizedViewWithGutter } from '@payloadcms/next/views/Unauthorized'
+import { VersionView as DefaultVersionView } from '@payloadcms/next/views/Version'
+import { VersionsView as DefaultVersionsView } from '@payloadcms/next/views/Versions'
+import { getCustomViewByKey } from '@payloadcms/next/views/Document'
+import { getCustomViewByRoute } from '@payloadcms/next/views/Document'
 
 export type ViewFromConfig<TProps extends object> = {
   Component?: React.FC<TProps>

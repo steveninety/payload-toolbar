@@ -60,7 +60,7 @@ export const Pages: CollectionConfig<'pages'> = {
       views: {
         edit: {
           root: {
-            Component: '@/components/Toolbar',
+            Component: '@/components/payload-next/views/Document',
           },
         },
       },

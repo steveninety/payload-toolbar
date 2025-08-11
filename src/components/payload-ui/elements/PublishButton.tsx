@@ -16,7 +16,7 @@ import { useOperation } from '@payloadcms/ui'
 import { useTranslation } from '@payloadcms/ui'
 import { PopupList } from '@payloadcms/ui'
 import { ScheduleDrawer } from '@payloadcms/ui/elements/PublishButton/ScheduleDrawer'
-import Toolbar, { TooltipTool } from '../../Toolbar'
+import Toolbar, { defaultClassNames, TooltipTool } from '../../Toolbar'
 import { UploadIcon } from 'lucide-react'
 import { cn } from '@/utilities/ui'
 import { FormSubmit } from './FormSubmit'
@@ -249,7 +249,7 @@ export function PublishButton({ label: labelProp }: PublishButtonClientProps) {
               // ref={ref}
               {...buttonProps}
               className={cn(
-                'w-8 flex flex-col items-center relative p-1 gap-1 rounded-sm !border-none',
+                defaultClassNames,
                 disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted',
               )}
               id="action-save"
@@ -261,7 +261,10 @@ export function PublishButton({ label: labelProp }: PublishButtonClientProps) {
               <Toolbar.IconSlot>
                 <UploadIcon />
               </Toolbar.IconSlot>
-              <Toolbar.BottomRow>30s</Toolbar.BottomRow>
+              <Toolbar.BottomRow>
+                <Toolbar.FilledChevronIcon />
+                30s
+              </Toolbar.BottomRow>
             </button>
           </TooltipTool>
         )}

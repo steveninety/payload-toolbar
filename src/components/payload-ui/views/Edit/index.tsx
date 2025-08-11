@@ -54,7 +54,8 @@ export function DefaultEditView({
   SaveDraftButton,
   Upload: CustomUpload,
   UploadControls,
-}: DocumentViewClientProps) {
+  documentTabs,
+}: DocumentViewClientProps & { documentTabs: React.ReactNode }) {
   const {
     id,
     action,
@@ -462,7 +463,7 @@ export function DefaultEditView({
     <main
       className={[
         baseClass,
-        (id || globalSlug) && `${baseClass}--is-editing`,
+        (id || globalSlug) && `${baseClass}--is-editing ${baseClass}--custom`,
         globalSlug && `global-edit--${globalSlug}`,
         collectionSlug && `collection-edit--${collectionSlug}`,
         isLivePreviewing && previewWindowType === 'iframe' && `${baseClass}--is-live-previewing`,
@@ -473,7 +474,7 @@ export function DefaultEditView({
       <OperationProvider operation={operation}>
         <Form
           action={action}
-          className={`${baseClass}__form`}
+          className={`${baseClass}__form border-solid border-t border-[var(--theme-elevation-150)]`}
           disabled={isReadOnlyForIncomingUser || isInitializing || !hasSavePermission || isTrashed}
           disableValidationOnSubmit={!validateBeforeSubmit}
           initialState={!isInitializing && initialState}
@@ -484,6 +485,7 @@ export function DefaultEditView({
           onSuccess={onSave}
         >
           <DocumentControls
+            documentTabs={documentTabs}
             apiURL={apiURL}
             BeforeDocumentControls={BeforeDocumentControls}
             customComponents={{

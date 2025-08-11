@@ -5,6 +5,10 @@
   .collection-edit {
     --gradient: linear-gradient(to left, rgba(0, 0, 0, 0.04) 0%, transparent 100%);
 
+    .document-fields__sidebar-fields {
+      padding-right: calc(var(--base) * 2)
+    }
+
     &__main-wrapper {
       width: 100%;
       display: flex;

@@ -1,10 +1,13 @@
 'use client'
 import type { SanitizedConfig } from 'payload'
 
-import { Button } from '@/components/payload-ui/elements/Button'
 import { useParams, usePathname, useSearchParams } from 'next/navigation'
 import { formatAdminURL } from 'payload/shared'
 import React from 'react'
+import Toolbar, { TooltipTool } from '@/components/Toolbar'
+import { SaveIcon } from 'lucide-react'
+import { cn } from '@/utilities/ui'
+import { Link } from '@payloadcms/ui'
 
 export const DocumentTabLink: React.FC<{
   adminRoute: SanitizedConfig['routes']['admin']
@@ -14,6 +17,9 @@ export const DocumentTabLink: React.FC<{
   href: string
   isActive?: boolean
   newTab?: boolean
+  customIcon?: React.ReactNode
+  tooltip?: string
+  onClick?: () => void
 }> = ({
   adminRoute,
   ariaLabel,
@@ -22,6 +28,9 @@ export const DocumentTabLink: React.FC<{
   href: hrefFromProps,
   isActive: isActiveFromProps,
   newTab,
+  customIcon,
+  tooltip,
+  onClick,
 }) => {
   const pathname = usePathname()
   const params = useParams()
@@ -55,19 +64,58 @@ export const DocumentTabLink: React.FC<{
     (href !== docPath && pathname.startsWith(href)) ||
     isActiveFromProps
 
-  return (
-    <Button
-      aria-label={ariaLabel}
-      buttonStyle="tab"
-      className={[baseClass, isActive && `${baseClass}--active`].filter(Boolean).join(' ')}
-      disabled={isActive}
-      el={!isActive || href !== pathname ? 'link' : 'div'}
-      margin={false}
-      newTab={newTab}
-      size="medium"
-      to={!isActive || href !== pathname ? hrefWithLocale : undefined}
-    >
-      {children}
-    </Button>
+  const handleClick = () => {
+    if (onClick) {
+      onClick()
+    }
+  }
+  const el = !isActive || href !== pathname ? 'link' : 'div'
+  const to = !isActive || href !== pathname ? hrefWithLocale : undefined
+  const prefetch = !isActive || href !== pathname ? true : false
+  const disabled = isActive
+
+  const buttonContents = (
+    <>
+      <Toolbar.TopRow />
+      <Toolbar.IconSlot>{customIcon}</Toolbar.IconSlot>
+      <Toolbar.BottomRow />
+    </>
   )
+
+  const buttonProps = {
+    'aria-label': ariaLabel,
+    disabled: isActive,
+    className: cn(
+      'w-full flex flex-col items-center relative p-1 gap-0 rounded-sm !border-none transition-colors',
+      // baseClass,
+      isActive && `${baseClass}--active`,
+      isActive ? 'cursor-default bg-muted' : 'cursor-pointer hover:bg-muted',
+    ),
+  }
+
+  // baseClass,
+  let buttonElement
+
+  switch (el) {
+    case 'link':
+      if (disabled) {
+        buttonElement = <div {...buttonProps}>{buttonContents}</div>
+      }
+
+      buttonElement = (
+        <Link {...buttonProps} href={to} prefetch={prefetch}>
+          {buttonContents}
+        </Link>
+      )
+
+      break
+
+    default:
+      const Tag = el // eslint-disable-line no-case-declarations
+
+      buttonElement = <Tag {...buttonProps}>{buttonContents}</Tag>
+      break
+  }
+
+  return <TooltipTool tooltip={tooltip || ariaLabel}>{buttonElement}</TooltipTool>
 }

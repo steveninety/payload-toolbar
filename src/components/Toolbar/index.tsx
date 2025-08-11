@@ -1,51 +1,70 @@
 'use client'
 
-import {
-  CopyIcon,
-  DotIcon,
-  Edit,
-  EllipsisIcon,
-  LayersIcon,
-  PlusIcon,
-  SaveIcon,
-  TrashIcon,
-  UploadIcon,
-  ZapIcon,
-} from 'lucide-react'
 import React from 'react'
-import { Form, PublishButton, SaveButton, useTranslation } from '@payloadcms/ui'
+import { useTranslation } from '@payloadcms/ui'
 import { Toggle } from '@/components/ui/toggle'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { SaveDraftButton } from '../payload-ui/elements/SaveDraftButton'
-import {
-  LivePreviewProvider,
-  DocumentInfoProvider,
-  EditDepthProvider,
-  HydrateAuthProvider,
-} from '@payloadcms/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 // Context for passing selected state to children
 const ToolContext = React.createContext<{ selected: boolean }>({ selected: false })
 
 export function ToolbarWrapper({ children }: { children: React.ReactNode }) {
+  /**
+   * For "floating" toolbar, use "md:h-[calc(100vh-var(--spacing-view-bottom)-var(--app-header-height))] md:top-[var(--doc-controls-height)]" on container.
+   * For "fixed" to top, use "md:top-[calc(-1*var(--app-header-height))]" on outer-wrapper.
+   */
   return (
-    <div className="toolbar__outer-wrapper md:w-8 md:absolute md:inset-0 md:left-1/2 md:overflow-y-auto scrollbar-hide">
-      <div className="toolbar__inner-wrapper flex flex-row md:flex-col px-4 md:px-0 md:py-4 sticky top-0 md:top-[var(--doc-controls-height)] overflow-x-auto md:overflow-x-hidden md:overflow-y-auto bg-background z-10 items-center border border-muted rounded-lg h-fit">
-        {children}
+    <div className="toolbar__container md:w-16 sticky z-10 top-0 md:h-[calc(100vh-var(--app-header-height))] border-solid border-l border-[var(--theme-elevation-150)]">
+      <div className="toolbar__outer-wrapper w-full md:absolute md:inset-0 md:left-1/2  md:overflow-y-auto scrollbar-hide z-10">
+        <div className="toolbar__inner-wrapper flex flex-row md:flex-col px-4 md:px-0  overflow-x-auto md:overflow-x-hidden md:overflow-y-auto z-10 items-center border-b md:border-b-0 md:border-l border-foreground rounded-lg h-fit">
+          {children}
+        </div>
       </div>
     </div>
   )
 }
 
-export function Group({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-row md:flex-col items-center gap-1 m-0.5">{children}</div>
+export function Group({ children, gap = true }: { children: React.ReactNode; gap?: boolean }) {
+  return (
+    <div
+      className={cn(
+        'toolbar__group md:w-full flex flex-row md:flex-col items-center m-0.5',
+        gap && 'gap-1',
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function Divider() {
+  return <div className="toolbar__divider md:h-px md:w-full h-full w-px bg-foreground" />
+}
+
+export function FilledChevronIcon({
+  className = '',
+  size = 12,
+}: {
+  className?: string
+  size?: number
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 12 12"
+      fill="currentColor"
+      className={`toolbar__chevron-icon absolute bottom-0 right-0 md:left-0 md:right-auto -rotate-45 md:rotate-45 ${className}`}
+    >
+      <path d="M6 6L6 2L10 6L6 6z" />
+    </svg>
+  )
 }
 
 interface TopRowProps {
@@ -56,7 +75,7 @@ interface TopRowProps {
 
 export function TopRow({ children, variant = 'text', color = 'bg-green-400' }: TopRowProps) {
   return (
-    <div className="relative">
+    <div className="toolbar__top-row relative">
       <div className="text-sm u-text-style- opacity-0 pointer-events-none">-</div>
       {children ? children : null}
     </div>
@@ -65,7 +84,10 @@ export function TopRow({ children, variant = 'text', color = 'bg-green-400' }: T
 
 export function TopRowDot({ children, color = 'bg-green-400' }: TopRowProps) {
   return (
-    <div className="w-full absolute bottom-1/2 right-0" style={{ transform: 'translateY(50%)' }}>
+    <div
+      className="toolbar__dot w-full absolute bottom-1/2 right-0"
+      style={{ transform: 'translateY(50%)' }}
+    >
       <div className="flex justify-end">
         <div className={`w-1.5 h-1.5 ${color} rounded-full`} />
       </div>
@@ -79,9 +101,11 @@ interface BottomRowProps {
 
 export function BottomRow({ children }: BottomRowProps) {
   return children ? (
-    <div className="text-sm u-text-style-">{children}</div>
+    <div className="toolbar__bottom-row text-sm u-text-style- relative">{children}</div>
   ) : (
-    <div className="text-sm u-text-style- opacity-0 pointer-events-none">-</div>
+    <div className="toolbar__bottom-row text-sm u-text-style- opacity-0 pointer-events-none relative">
+      -
+    </div>
   )
 }
 
@@ -101,7 +125,7 @@ export function IconSlot({ children }: IconSlotProps) {
     const iconClasses = selected ? 'w-5 h-5 text-foreground' : 'w-5 h-5 text-muted-foreground'
 
     return (
-      <div className="flex items-center justify-center">
+      <div className="toolbar__icon-slot flex items-center justify-center">
         {React.cloneElement(children as React.ReactElement<any>, {
           className: `w-5 h-5 text-foreground ${(children.props as any).className || ''}`.trim(),
         })}
@@ -109,7 +133,7 @@ export function IconSlot({ children }: IconSlotProps) {
     )
   }
 
-  return <div className="flex items-center justify-center">{children}</div>
+  return <div className="toolbar__icon-slot flex items-center justify-center">{children}</div>
 }
 
 interface ToolProps {
@@ -122,8 +146,6 @@ interface ToolProps {
 
 const Tool = React.forwardRef<HTMLButtonElement, ToolProps>(
   ({ children, variant = 'default', selected = false, disabled = false, onClick }, ref) => {
-    const baseClasses = 'w-8 flex flex-col items-center relative p-1 gap-1 rounded-sm !border-none'
-
     if (variant === 'shadcn-toggle') {
       return (
         <ToolContext.Provider value={{ selected }}>
@@ -151,7 +173,7 @@ const Tool = React.forwardRef<HTMLButtonElement, ToolProps>(
         <ToolContext.Provider value={{ selected }}>
           <button
             ref={ref}
-            className={`${baseClasses} ${toggleClasses} ${disabledClasses} transition-colors`}
+            className={`toolbar__tool ${defaultClassNames} ${toggleClasses} ${disabledClasses} transition-colors`}
             onClick={() => {
               if (!disabled) {
                 console.log('clicked')
@@ -257,7 +279,7 @@ function DropdownTool({ children, dropdownItems }: DropdownToolProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="w-8 flex flex-col items-center relative p-1 gap-1 rounded-sm hover:bg-muted cursor-pointer">
+        <div className="w-full flex flex-col items-center relative p-1 gap-1 rounded-sm hover:bg-muted cursor-pointer">
           {children}
         </div>
       </DropdownMenuTrigger>
@@ -274,12 +296,15 @@ export default function Toolbar(props: DocumentViewClientProps) {
   const [multiSelectValues, setMultiSelectValues] = React.useState<string[]>([])
   const { t } = useTranslation()
 
-  return <DefaultEditView {...props} />
+  return <></>
 }
 
+export const defaultClassNames =
+  'w-full flex flex-col items-center relative p-1 gap-0 rounded-sm !border-none transition-colors'
+
 import type { DocumentViewClientProps } from 'payload'
-import { DefaultEditView } from '@/components/payload-ui/views/Edit'
 import { TooltipPortal } from '@radix-ui/react-tooltip'
+import { cn } from '@/utilities/ui'
 Toolbar.Wrapper = ToolbarWrapper
 Toolbar.Group = Group
 Toolbar.Tool = Tool
@@ -290,3 +315,5 @@ Toolbar.TopRow = TopRow
 Toolbar.TopRowDot = TopRowDot
 Toolbar.BottomRow = BottomRow
 Toolbar.IconSlot = IconSlot
+Toolbar.Divider = Divider
+Toolbar.FilledChevronIcon = FilledChevronIcon

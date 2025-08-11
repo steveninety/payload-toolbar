@@ -16,7 +16,7 @@ import {
 import { FormSubmit } from './FormSubmit'
 import { cn } from '@/utilities/ui'
 import { formatTimeAgoCompact } from '@/utilities/formatTimeAgoCompact'
-import Toolbar, { TooltipTool } from '@/components/Toolbar'
+import Toolbar, { defaultClassNames, TooltipTool } from '@/components/Toolbar'
 import { SaveIcon } from 'lucide-react'
 
 const baseClass = 'save-draft'
@@ -120,7 +120,7 @@ export const SaveDraftButton = React.forwardRef<
               {...buttonProps}
               ref={ref}
               className={cn(
-                'w-8 flex flex-col items-center relative p-1 gap-1 rounded-sm !border-none',
+                defaultClassNames,
                 isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-muted',
                 props.className,
               )}

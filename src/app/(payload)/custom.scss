@@ -219,6 +219,6 @@ button {
 .toolbar__outer-wrapper {
   @media (min-width: 768px) {
     transform: translateX(-50%);
-    margin-top: calc(var(--base)*1.5);
+    // margin-top: calc(var(--base)*1.5); // only relevant when toolbar is "floating"
   }
 }

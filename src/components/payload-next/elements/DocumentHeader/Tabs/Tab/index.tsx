@@ -24,6 +24,7 @@ export const DefaultDocumentTab: React.FC<{
   permissions?: SanitizedPermissions
   req: PayloadRequest
   tabConfig: { readonly Pill_Component?: React.FC } & DocumentTabConfig
+  icon?: React.ReactNode
 }> = (props) => {
   const {
     apiURL,
@@ -32,6 +33,7 @@ export const DefaultDocumentTab: React.FC<{
     permissions,
     req,
     tabConfig: { href: tabHref, isActive: tabIsActive, label, newTab, Pill, Pill_Component },
+    icon,
   } = props
 
   let href = typeof tabHref === 'string' ? tabHref : ''
@@ -39,9 +41,9 @@ export const DefaultDocumentTab: React.FC<{
 
   if (typeof tabHref === 'function') {
     href = tabHref({
-      apiURL,
-      collection: collectionConfig,
-      global: globalConfig,
+      apiURL: apiURL || '',
+      collection: collectionConfig || ({} as SanitizedCollectionConfig),
+      global: globalConfig || ({} as SanitizedGlobalConfig),
       routes: req.payload.config.routes,
     })
   }
@@ -55,7 +57,7 @@ export const DefaultDocumentTab: React.FC<{
   const labelToRender =
     typeof label === 'function'
       ? label({
-          t: req.i18n.t,
+          t: (key: string) => req.i18n.t(key as any),
         })
       : label
 
@@ -67,6 +69,8 @@ export const DefaultDocumentTab: React.FC<{
       href={href}
       isActive={isActive}
       newTab={newTab}
+      tooltip={labelToRender}
+      customIcon={icon}
     >
       <span className={`${baseClass}__label`}>
         {labelToRender}
@@ -80,9 +84,9 @@ export const DefaultDocumentTab: React.FC<{
               serverProps: {
                 i18n: req.i18n,
                 payload: req.payload,
-                permissions,
+                permissions: permissions || ({} as SanitizedPermissions),
                 req,
-                user: req.user,
+                user: req.user || undefined,
               } satisfies DocumentTabServerPropsOnly,
             })}
           </Fragment>

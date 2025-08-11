@@ -10,7 +10,7 @@ import type {
 import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent'
 import React from 'react'
 
-// import { ShouldRenderTabs } from '@payloadcms/next/elements/DocumentHeader/Tabs/ShouldRenderTabs'
+// import { ShouldRenderTabs } from '@payloadcms/next/elements/DocumentHeader/Tabs/ShouldRenderTabs's
 import { DefaultDocumentTab } from './Tab/index'
 import { getTabs } from './tabs/index'
 // import './index.scss'
@@ -32,54 +32,57 @@ export const DocumentTabs: React.FC<{
 
   return (
     // <ShouldRenderTabs>
-    <div className={baseClass}>
-      <div className={`${baseClass}__tabs-container`}>
-        <ul className={`${baseClass}__tabs`}>
-          {tabs?.map(({ tab: tabConfig, viewPath }, index) => {
-            const { condition } = tabConfig || {}
+    <>
+      {/* <div className={baseClass}> */}
+      {/* <div className={`${baseClass}__tabs-container`}> */}
+      {/* <ul className={`${baseClass}__tabs md:flex-col`}> */}
+      {tabs?.map(({ tab: tabConfig, viewPath }, index) => {
+        const { condition, icon } = tabConfig || {}
 
-            const meetsCondition =
-              !condition || condition({ collectionConfig, config, globalConfig, permissions, req })
+        const meetsCondition =
+          !condition || condition({ collectionConfig, config, globalConfig, permissions, req })
 
-            if (!meetsCondition) {
-              return null
-            }
+        if (!meetsCondition) {
+          return null
+        }
 
-            if (tabConfig?.Component) {
-              return RenderServerComponent({
-                clientProps: {
-                  path: viewPath,
-                } satisfies DocumentTabClientProps,
-                Component: tabConfig.Component,
-                importMap: req.payload.importMap,
-                key: `tab-${index}`,
-                serverProps: {
-                  collectionConfig,
-                  globalConfig,
-                  i18n: req.i18n,
-                  payload: req.payload,
-                  permissions,
-                  req,
-                  user: req.user,
-                } satisfies DocumentTabServerPropsOnly,
-              })
-            }
+        if (tabConfig?.Component) {
+          return RenderServerComponent({
+            clientProps: {
+              path: viewPath,
+            } satisfies DocumentTabClientProps,
+            Component: tabConfig.Component,
+            importMap: req.payload.importMap,
+            key: `tab-${index}`,
+            serverProps: {
+              collectionConfig,
+              globalConfig,
+              i18n: req.i18n,
+              payload: req.payload,
+              permissions,
+              req,
+              user: req.user || undefined,
+            } satisfies DocumentTabServerPropsOnly,
+          })
+        }
 
-            return (
-              <DefaultDocumentTab
-                collectionConfig={collectionConfig}
-                globalConfig={globalConfig}
-                key={`tab-${index}`}
-                path={viewPath}
-                permissions={permissions}
-                req={req}
-                tabConfig={tabConfig}
-              />
-            )
-          })}
-        </ul>
-      </div>
-    </div>
+        return (
+          <DefaultDocumentTab
+            collectionConfig={collectionConfig}
+            globalConfig={globalConfig}
+            key={`tab-${index}`}
+            path={viewPath}
+            permissions={permissions}
+            req={req}
+            tabConfig={tabConfig}
+            icon={icon}
+          />
+        )
+      })}
+      {/* </ul> */}
+      {/* </div> */}
+      {/* </div> */}
+    </>
     // </ShouldRenderTabs>
   )
 }

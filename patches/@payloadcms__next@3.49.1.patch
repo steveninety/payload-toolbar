@@ -85,6 +85,11 @@ index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb90
 +      "import": "./dist/elements/*/*/index.js",
 +      "types": "./dist/elements/*/*/index.d.ts",
 +      "default": "./dist/elements/*/*/index.js"
++    },
++    "./elements/*/*/*": {
++      "import": "./dist/elements/*/*/*/index.js",
++      "types": "./dist/elements/*/*/*/index.d.ts",
++      "default": "./dist/elements/*/*/*/index.js"
      }
    },
    "main": "./dist/index.js",

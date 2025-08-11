@@ -10,6 +10,7 @@ import { Gutter, RenderTitle } from '@payloadcms/ui'
 import React from 'react'
 
 import { DocumentTabs } from './Tabs'
+import { TooltipProvider } from '@/components/ui/tooltip'
 // import './index.scss'
 
 const baseClass = `doc-header`
@@ -27,12 +28,14 @@ export const DocumentHeader: React.FC<{
     <Gutter className={baseClass}>
       <RenderTitle className={`${baseClass}__title`} />
       {!hideTabs && (
-        <DocumentTabs
-          collectionConfig={collectionConfig}
-          globalConfig={globalConfig}
-          permissions={permissions}
-          req={req}
-        />
+        <TooltipProvider>
+          <DocumentTabs
+            collectionConfig={collectionConfig}
+            globalConfig={globalConfig}
+            permissions={permissions}
+            req={req}
+          />
+        </TooltipProvider>
       )}
     </Gutter>
   )

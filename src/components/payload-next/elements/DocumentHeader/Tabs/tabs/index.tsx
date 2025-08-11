@@ -1,6 +1,7 @@
 import type { DocumentTabConfig, SanitizedCollectionConfig, SanitizedGlobalConfig } from 'payload'
 
 import { VersionsPill } from '@payloadcms/next/elements/DocumentHeader/Tabs/tabs/VersionsPill'
+import { Edit3, Code, History } from 'lucide-react'
 
 export const documentViewKeys = ['api', 'default', 'livePreview', 'versions']
 
@@ -12,7 +13,7 @@ export const getTabs = ({
 }: {
   collectionConfig?: SanitizedCollectionConfig
   globalConfig?: SanitizedGlobalConfig
-}): { tab: DocumentTabConfig; viewPath: string }[] => {
+}): { tab: DocumentTabConfig & { icon?: React.ReactNode }; viewPath: string }[] => {
   const customViews =
     collectionConfig?.admin?.components?.views?.edit ||
     globalConfig?.admin?.components?.views?.edit ||
@@ -24,6 +25,7 @@ export const getTabs = ({
         href: '',
         label: ({ t }) => t('general:edit'),
         order: 100,
+        icon: <Edit3 className="w-4 h-4" />,
         ...(customViews?.['default']?.tab || {}),
       },
       viewPath: '/',
@@ -40,6 +42,7 @@ export const getTabs = ({
         label: ({ t }) => t('version:versions'),
         order: 300,
         Pill_Component: VersionsPill,
+        icon: <History className="w-4 h-4" />,
         ...(customViews?.['versions']?.tab || {}),
       },
       viewPath: '/versions',
@@ -52,6 +55,7 @@ export const getTabs = ({
         href: '/api',
         label: 'API',
         order: 400,
+        icon: <Code className="w-4 h-4" />,
         ...(customViews?.['api']?.tab || {}),
       },
       viewPath: '/api',

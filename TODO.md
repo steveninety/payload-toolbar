@@ -1,1 +1,2 @@
-- adapt files to payload 3.49
+- toolbar items full width
+- publish button toolbar submenu

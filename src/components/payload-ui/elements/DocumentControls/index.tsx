@@ -29,8 +29,8 @@ import { Status } from '@payloadcms/ui/elements/Status'
 import { useLivePreviewContext } from '@/components/payload-ui/providers/LivePreview/context'
 import { formatDate } from '@payloadcms/ui/utilities/formatDocTitle/formatDateTitle'
 import { Autosave } from '@payloadcms/ui/elements/Autosave'
-import { DeleteDocument } from '@payloadcms/ui/elements/DeleteDocument'
-import { DuplicateDocument } from '@payloadcms/ui/elements/DuplicateDocument'
+import { DeleteDocument } from '@/components/payload-ui/elements/DeleteDocument'
+import { DuplicateDocument } from '@/components/payload-ui/elements/DuplicateDocument'
 import { LivePreviewToggler } from '@payloadcms/ui/elements/LivePreview/Toggler'
 import {
   useFormInitializing,
@@ -55,12 +55,14 @@ import { PermanentlyDeleteButton } from '@payloadcms/ui/elements/PermanentlyDele
 import { RestoreButton } from '@payloadcms/ui/elements/RestoreButton'
 import './index.scss'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import TB from '@/components/Toolbar'
-import { DocumentTabs } from '@/components/payload-next/elements/DocumentHeader/Tabs'
+import TB, { defaultClassNames, TooltipTool } from '@/components/Toolbar'
+import { cn } from '@/utilities/ui'
+// import { DocumentTabs } from '@/components/payload-next/elements/DocumentHeader/Tabs'
 
 const baseClass = 'doc-controls'
 
 export const DocumentControls: React.FC<{
+  readonly documentTabs: React.ReactNode
   readonly apiURL: string
   readonly BeforeDocumentControls?: React.ReactNode
   readonly customComponents?: {
@@ -96,6 +98,7 @@ export const DocumentControls: React.FC<{
   readonly user?: ClientUser
 }> = (props) => {
   const {
+    documentTabs,
     id,
     slug,
     BeforeDocumentControls,
@@ -190,138 +193,152 @@ export const DocumentControls: React.FC<{
       globalConfigDrafts.autosave !== false &&
       globalConfigDrafts.autosave.showSaveDraftButton === true)
 
+  // Debug logging for SaveDraftButton conditions
+  console.log('SaveDraftButton Debug:', {
+    unsavedDraftWithValidations,
+    autosaveEnabled,
+    showSaveDraftButton,
+    collectionAutosaveEnabled,
+    globalAutosaveEnabled,
+    collectionConfigDrafts: collectionConfigDrafts?.autosave,
+    globalConfigDrafts: globalConfigDrafts?.autosave,
+    CustomSaveDraftButton: !!CustomSaveDraftButton,
+    hasSavePermission,
+    collectionConfig: !!collectionConfig,
+    globalConfig: !!globalConfig,
+    'collectionConfig?.versions?.drafts': !!collectionConfig?.versions?.drafts,
+    'globalConfig?.versions?.drafts': !!globalConfig?.versions?.drafts,
+  })
+
   const showCopyToLocale = localization && !collectionConfig?.admin?.disableCopyToLocale
 
   const showFolderMetaIcon = collectionConfig && collectionConfig.folders
   const showLockedMetaIcon = user && readOnlyForIncomingUser
 
   return (
-    <div className="md:w-16 md:h-[calc(100vh-var(--spacing-view-bottom)-var(--app-header-height))] sticky top-0">
-      <TooltipProvider>
-        <TB.Wrapper>
-          <TB.Group>
-            {hasSavePermission && (
-              <Fragment>
-                {collectionConfig?.versions?.drafts || globalConfig?.versions?.drafts ? (
-                  <Fragment>
-                    {(unsavedDraftWithValidations ||
-                      !autosaveEnabled ||
-                      (autosaveEnabled && showSaveDraftButton)) && (
-                      <RenderCustomComponent
-                        CustomComponent={CustomSaveDraftButton}
-                        Fallback={<SaveDraftButton />}
-                      />
-                    )}
-                    <RenderCustomComponent
-                      CustomComponent={CustomPublishButton}
-                      Fallback={<PublishButton />}
-                    />
-                  </Fragment>
-                ) : (
+    <TooltipProvider>
+      <TB.Wrapper>
+        <TB.Group gap={false}>{documentTabs}</TB.Group>
+        <TB.Divider />
+        <TB.Group>
+          {hasSavePermission && (
+            <Fragment>
+              {collectionConfig?.versions?.drafts || globalConfig?.versions?.drafts ? (
+                <Fragment>
+                  {(() => {
+                    console.log('SaveDraftButton Render Logic:', {
+                      unsavedDraftWithValidations,
+                      autosaveEnabled,
+                      showSaveDraftButton,
+                      condition1: unsavedDraftWithValidations,
+                      condition2: !autosaveEnabled,
+                      condition3: autosaveEnabled && showSaveDraftButton,
+                      finalCondition:
+                        unsavedDraftWithValidations ||
+                        !autosaveEnabled ||
+                        (autosaveEnabled && showSaveDraftButton),
+                      shouldRender:
+                        unsavedDraftWithValidations ||
+                        !autosaveEnabled ||
+                        (autosaveEnabled && showSaveDraftButton),
+                    })
+                    return (
+                      unsavedDraftWithValidations ||
+                      ((!autosaveEnabled || (autosaveEnabled && showSaveDraftButton)) && (
+                        <RenderCustomComponent
+                          CustomComponent={CustomSaveDraftButton}
+                          Fallback={<SaveDraftButton />}
+                        />
+                      ))
+                    )
+                  })()}
+                  {/* <RenderCustomComponent
+                      CustomComponent={CustomSaveDraftButton}
+                      Fallback={<SaveDraftButton />}
+                    /> */}
                   <RenderCustomComponent
-                    CustomComponent={CustomSaveButton}
-                    Fallback={<SaveButton />}
+                    CustomComponent={CustomPublishButton}
+                    Fallback={<PublishButton />}
                   />
-                )}
-              </Fragment>
-            )}
-            <SaveDraftButton />
-            {/* {!hideTabs && ( */}
-            {/* <DocumentTabs
-              collectionConfig={collectionConfig}
-              globalConfig={globalConfig}
-              permissions={permissions}
-              req={req}
-            /> */}
-            {/* )} */}
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <PublishButton />
-            <TB.TooltipTool tooltip="More Options">
-              <TB.DropdownTool
-                dropdownItems={
-                  <div className="flex items-center space-x-1">
-                    <TB.Tool>
-                      <TB.TopRow variant="dot" color="bg-blue-400" />
-                      <TB.IconSlot>
-                        <PlusIcon />
-                      </TB.IconSlot>
-                      <TB.BottomRow>Create new</TB.BottomRow>
-                    </TB.Tool>
-                    <TB.Tool>
-                      <TB.TopRow variant="text">3</TB.TopRow>
-                      <TB.IconSlot>
-                        <CopyIcon />
-                      </TB.IconSlot>
-                      <TB.BottomRow>Duplicate</TB.BottomRow>
-                    </TB.Tool>
-                    <TB.Tool>
-                      <TB.TopRow color="bg-yellow-400" />
-                      <TB.IconSlot>
-                        <TrashIcon />
-                      </TB.IconSlot>
-                      <TB.BottomRow>Delete</TB.BottomRow>
-                    </TB.Tool>
-                  </div>
-                }
-              >
-                <TB.TopRow color="bg-red-400" />
-                <TB.IconSlot>
-                  <EllipsisIcon />
-                </TB.IconSlot>
-                <TB.BottomRow></TB.BottomRow>
-              </TB.DropdownTool>
-            </TB.TooltipTool>
-          </TB.Group>
-          <TB.Group>
-            <TB.TooltipTool tooltip="Views">
-              <TB.DropdownTool
-                dropdownItems={
-                  <div className="flex items-center space-x-1">
-                    <TB.Tool>
-                      <TB.TopRow variant="dot" color="bg-blue-400" />
-                      <TB.IconSlot>
-                        <Edit />
-                      </TB.IconSlot>
-                      <TB.BottomRow>Edit</TB.BottomRow>
-                    </TB.Tool>
-                    <TB.Tool>
-                      <TB.TopRow variant="text">3</TB.TopRow>
-                      <TB.IconSlot>
-                        <LayersIcon />
-                      </TB.IconSlot>
-                      <TB.BottomRow>Versions</TB.BottomRow>
-                    </TB.Tool>
-                    <TB.Tool>
-                      <TB.TopRow color="bg-yellow-400" />
-                      <TB.IconSlot>
-                        <ZapIcon />
-                      </TB.IconSlot>
-                      <TB.BottomRow>API</TB.BottomRow>
-                    </TB.Tool>
-                  </div>
-                }
-              >
-                <TB.TopRow color="bg-red-400" />
-                <TB.IconSlot>
-                  <EllipsisIcon />
-                </TB.IconSlot>
-                <TB.BottomRow></TB.BottomRow>
-              </TB.DropdownTool>
-            </TB.TooltipTool>
-          </TB.Group>
-        </TB.Wrapper>
-      </TooltipProvider>
-    </div>
+                </Fragment>
+              ) : (
+                <RenderCustomComponent
+                  CustomComponent={CustomSaveButton}
+                  Fallback={<SaveButton />}
+                />
+              )}
+            </Fragment>
+          )}
+        </TB.Group>
+        <TB.Divider />
+        <TB.Group>
+          {showCopyToLocale && <CopyLocaleData />}
+          {hasCreatePermission && (
+            <React.Fragment>
+              {!disableCreate && (
+                <Fragment>
+                  <TooltipTool tooltip={i18n.t('general:createNew')}>
+                    {editDepth > 1 ? (
+                      <button
+                        className={cn(defaultClassNames)}
+                        href={formatAdminURL({
+                          adminRoute,
+                          path: `/collections/${collectionConfig?.slug}/create`,
+                        })}
+                        id="action-create"
+                        onClick={onDrawerCreateNew}
+                      >
+                        <TB.TopRow />
+                        <TB.IconSlot>
+                          <PlusIcon />
+                        </TB.IconSlot>
+                        <TB.BottomRow />
+                      </button>
+                    ) : (
+                      <a
+                        className={cn(defaultClassNames)}
+                        href={formatAdminURL({
+                          adminRoute,
+                          path: `/collections/${collectionConfig?.slug}/create`,
+                        })}
+                        id="action-create"
+                      >
+                        <TB.TopRow />
+                        <TB.IconSlot>
+                          <PlusIcon />
+                        </TB.IconSlot>
+                        <TB.BottomRow />
+                      </a>
+                    )}
+                  </TooltipTool>
+                </Fragment>
+              )}
+              {collectionConfig.disableDuplicate !== true && isEditing && (
+                <DuplicateDocument
+                  id={id.toString()}
+                  onDuplicate={onDuplicate}
+                  redirectAfterDuplicate={redirectAfterDuplicate}
+                  singularLabel={collectionConfig?.labels?.singular}
+                  slug={collectionConfig?.slug}
+                />
+              )}
+            </React.Fragment>
+          )}
+          {hasDeletePermission && (
+            <DeleteDocument
+              buttonId="action-delete"
+              collectionSlug={collectionConfig?.slug}
+              id={id.toString()}
+              onDelete={onDelete}
+              redirectAfterDelete={redirectAfterDelete}
+              singularLabel={collectionConfig?.labels?.singular}
+              useAsTitle={collectionConfig?.admin?.useAsTitle}
+            />
+          )}
+          {EditMenuItems}
+        </TB.Group>
+      </TB.Wrapper>
+    </TooltipProvider>
   )
 
   //   return (

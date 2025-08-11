@@ -345,6 +345,14 @@ export const renderDocument = async ({
     ...documentSlots,
     documentSubViewType,
     viewType,
+    documentTabs: (
+      <DocumentTabs
+        collectionConfig={collectionConfig}
+        globalConfig={globalConfig}
+        permissions={permissions}
+        req={req}
+      />
+    ),
     // req,
   }
 
@@ -381,15 +389,6 @@ export const renderDocument = async ({
 
   console.log({ View })
 
-  const DocumentTabsServer = () => (
-    <DocumentTabs
-      collectionConfig={collectionConfig}
-      globalConfig={globalConfig}
-      permissions={permissions}
-      req={req}
-    />
-  )
-
   return {
     data: doc,
     Document: (
@@ -423,14 +422,14 @@ export const renderDocument = async ({
           isLivePreviewing={entityPreferences?.value?.editViewType === 'live-preview'}
           url={livePreviewURL}
         >
-          {showHeader && !drawerSlug && (
+          {/* {showHeader && !drawerSlug && (
             <DocumentHeader
               collectionConfig={collectionConfig}
               globalConfig={globalConfig}
               permissions={permissions}
               req={req}
             />
-          )}
+          )} */}
           <HydrateAuthProvider permissions={permissions} />
           <EditDepthProvider>
             {RenderServerComponent({
@@ -438,7 +437,6 @@ export const renderDocument = async ({
               Component: View,
               importMap,
               serverProps: documentViewServerProps,
-              tabsComponent: 
             })}
           </EditDepthProvider>
         </LivePreviewProvider>

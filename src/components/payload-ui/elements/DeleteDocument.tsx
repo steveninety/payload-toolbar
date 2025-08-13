@@ -16,7 +16,7 @@ import { useConfig } from '@payloadcms/ui'
 import { useDocumentTitle } from '@payloadcms/ui'
 import { useRouteTransition } from '@payloadcms/ui'
 import { useTranslation } from '@payloadcms/ui'
-// import { requests } from '../../utilities/api.js'
+import { requests } from '@payloadcms/ui/utilities/api'
 import { ConfirmationModal } from '@payloadcms/ui'
 import { PopupList } from '@payloadcms/ui'
 import { Translation } from '@payloadcms/ui'
@@ -77,6 +77,8 @@ export const DeleteDocument: React.FC<Props> = (props) => {
   const handleDelete = useCallback(async () => {
     setModified(false)
 
+    console.log('deletePermanently', deletePermanently)
+
     try {
       const res =
         deletePermanently || !collectionConfig.trash
@@ -98,6 +100,8 @@ export const DeleteDocument: React.FC<Props> = (props) => {
 
       const json = await res.json()
 
+      console.log('json', json)
+
       if (res.status < 400) {
         toast.success(
           t(
@@ -112,6 +116,7 @@ export const DeleteDocument: React.FC<Props> = (props) => {
         )
 
         if (redirectAfterDelete) {
+          console.log('redirectAfterDelete', redirectAfterDelete)
           return startRouteTransition(() =>
             router.push(
               formatAdminURL({
@@ -206,7 +211,10 @@ export const DeleteDocument: React.FC<Props> = (props) => {
           confirmingLabel={t('general:deleting')}
           heading={t('general:confirmDeletion')}
           modalSlug={modalSlug}
-          onConfirm={handleDelete}
+          // onConfirm={handleDelete}
+          onConfirm={() => {
+            console.log('onConfirm')
+          }}
         />
       </Fragment>
     )

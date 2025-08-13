@@ -38,6 +38,7 @@ import { handleTakeOver } from '@payloadcms/ui/utilities/handleTakeOver'
 import { Auth } from '@payloadcms/ui/views/Edit/Auth'
 import { SetDocumentStepNav, SetDocumentTitle } from '@payloadcms/ui'
 import './index.scss'
+import Toolbar from '@/components/Toolbar'
 
 const baseClass = 'collection-edit'
 
@@ -474,7 +475,7 @@ export function DefaultEditView({
       <OperationProvider operation={operation}>
         <Form
           action={action}
-          className={`${baseClass}__form border-solid border-t border-[var(--theme-elevation-150)]`}
+          className={`${baseClass}__form`}
           disabled={isReadOnlyForIncomingUser || isInitializing || !hasSavePermission || isTrashed}
           disableValidationOnSubmit={!validateBeforeSubmit}
           initialState={!isInitializing && initialState}
@@ -484,53 +485,54 @@ export function DefaultEditView({
           onChange={[onChange]}
           onSuccess={onSave}
         >
-          <DocumentControls
-            documentTabs={documentTabs}
-            apiURL={apiURL}
-            BeforeDocumentControls={BeforeDocumentControls}
-            customComponents={{
-              PreviewButton,
-              PublishButton,
-              SaveButton,
-              SaveDraftButton,
-            }}
-            data={savedDocumentData}
-            disableActions={disableActions || isFolderCollection || isTrashed}
-            disableCreate={disableCreate}
-            EditMenuItems={EditMenuItems}
-            hasPublishPermission={hasPublishPermission}
-            hasSavePermission={hasSavePermission}
-            id={id}
-            isEditing={isEditing}
-            isInDrawer={isInDrawer}
-            isTrashed={isTrashed}
-            onDelete={onDelete}
-            onDrawerCreateNew={clearDoc}
-            onDuplicate={onDuplicate}
-            onRestore={onRestore}
-            onSave={onSave}
-            onTakeOver={() =>
-              handleTakeOver(
-                id,
-                collectionSlug,
-                globalSlug,
-                user,
-                true,
-                updateDocumentEditor,
-                setCurrentEditor,
-                documentLockState,
-                isLockingEnabled,
-                setIsReadOnlyForIncomingUser,
-              )
-            }
-            permissions={docPermissions}
-            readOnlyForIncomingUser={isReadOnlyForIncomingUser}
-            redirectAfterDelete={redirectAfterDelete}
-            redirectAfterDuplicate={redirectAfterDuplicate}
-            redirectAfterRestore={redirectAfterRestore}
-            slug={collectionConfig?.slug || globalConfig?.slug}
-            user={currentEditor}
-          />
+          <Toolbar documentTabs={documentTabs}>
+            <DocumentControls
+              apiURL={apiURL}
+              BeforeDocumentControls={BeforeDocumentControls}
+              customComponents={{
+                PreviewButton,
+                PublishButton,
+                SaveButton,
+                SaveDraftButton,
+              }}
+              data={savedDocumentData}
+              disableActions={disableActions || isFolderCollection || isTrashed}
+              disableCreate={disableCreate}
+              EditMenuItems={EditMenuItems}
+              hasPublishPermission={hasPublishPermission}
+              hasSavePermission={hasSavePermission}
+              id={id}
+              isEditing={isEditing}
+              isInDrawer={isInDrawer}
+              isTrashed={isTrashed}
+              onDelete={onDelete}
+              onDrawerCreateNew={clearDoc}
+              onDuplicate={onDuplicate}
+              onRestore={onRestore}
+              onSave={onSave}
+              onTakeOver={() =>
+                handleTakeOver(
+                  id,
+                  collectionSlug,
+                  globalSlug,
+                  user,
+                  true,
+                  updateDocumentEditor,
+                  setCurrentEditor,
+                  documentLockState,
+                  isLockingEnabled,
+                  setIsReadOnlyForIncomingUser,
+                )
+              }
+              permissions={docPermissions}
+              readOnlyForIncomingUser={isReadOnlyForIncomingUser}
+              redirectAfterDelete={redirectAfterDelete}
+              redirectAfterDuplicate={redirectAfterDuplicate}
+              redirectAfterRestore={redirectAfterRestore}
+              slug={collectionConfig?.slug || globalConfig?.slug}
+              user={currentEditor}
+            />
+          </Toolbar>
           <div className={`${baseClass}__form-main`}>
             {isInDrawer && (
               <DocumentDrawerHeader drawerSlug={drawerSlug} showDocumentID={!isFolderCollection} />

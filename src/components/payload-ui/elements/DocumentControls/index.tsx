@@ -62,7 +62,6 @@ import { cn } from '@/utilities/ui'
 const baseClass = 'doc-controls'
 
 export const DocumentControls: React.FC<{
-  readonly documentTabs: React.ReactNode
   readonly apiURL: string
   readonly BeforeDocumentControls?: React.ReactNode
   readonly customComponents?: {
@@ -98,7 +97,6 @@ export const DocumentControls: React.FC<{
   readonly user?: ClientUser
 }> = (props) => {
   const {
-    documentTabs,
     id,
     slug,
     BeforeDocumentControls,
@@ -216,129 +214,123 @@ export const DocumentControls: React.FC<{
   const showLockedMetaIcon = user && readOnlyForIncomingUser
 
   return (
-    <TooltipProvider>
-      <TB.Wrapper>
-        <TB.Group gap={false}>{documentTabs}</TB.Group>
-        <TB.Divider />
-        <TB.Group>
-          {hasSavePermission && (
-            <Fragment>
-              {collectionConfig?.versions?.drafts || globalConfig?.versions?.drafts ? (
-                <Fragment>
-                  {(() => {
-                    console.log('SaveDraftButton Render Logic:', {
-                      unsavedDraftWithValidations,
-                      autosaveEnabled,
-                      showSaveDraftButton,
-                      condition1: unsavedDraftWithValidations,
-                      condition2: !autosaveEnabled,
-                      condition3: autosaveEnabled && showSaveDraftButton,
-                      finalCondition:
-                        unsavedDraftWithValidations ||
-                        !autosaveEnabled ||
-                        (autosaveEnabled && showSaveDraftButton),
-                      shouldRender:
-                        unsavedDraftWithValidations ||
-                        !autosaveEnabled ||
-                        (autosaveEnabled && showSaveDraftButton),
-                    })
-                    return (
+    <>
+      <TB.Divider />
+      <TB.Group>
+        {hasSavePermission && (
+          <Fragment>
+            {collectionConfig?.versions?.drafts || globalConfig?.versions?.drafts ? (
+              <Fragment>
+                {(() => {
+                  console.log('SaveDraftButton Render Logic:', {
+                    unsavedDraftWithValidations,
+                    autosaveEnabled,
+                    showSaveDraftButton,
+                    condition1: unsavedDraftWithValidations,
+                    condition2: !autosaveEnabled,
+                    condition3: autosaveEnabled && showSaveDraftButton,
+                    finalCondition:
                       unsavedDraftWithValidations ||
-                      ((!autosaveEnabled || (autosaveEnabled && showSaveDraftButton)) && (
-                        <RenderCustomComponent
-                          CustomComponent={CustomSaveDraftButton}
-                          Fallback={<SaveDraftButton />}
-                        />
-                      ))
-                    )
-                  })()}
-                  {/* <RenderCustomComponent
+                      !autosaveEnabled ||
+                      (autosaveEnabled && showSaveDraftButton),
+                    shouldRender:
+                      unsavedDraftWithValidations ||
+                      !autosaveEnabled ||
+                      (autosaveEnabled && showSaveDraftButton),
+                  })
+                  return (
+                    unsavedDraftWithValidations ||
+                    ((!autosaveEnabled || (autosaveEnabled && showSaveDraftButton)) && (
+                      <RenderCustomComponent
+                        CustomComponent={CustomSaveDraftButton}
+                        Fallback={<SaveDraftButton />}
+                      />
+                    ))
+                  )
+                })()}
+                {/* <RenderCustomComponent
                       CustomComponent={CustomSaveDraftButton}
                       Fallback={<SaveDraftButton />}
                     /> */}
-                  <RenderCustomComponent
-                    CustomComponent={CustomPublishButton}
-                    Fallback={<PublishButton />}
-                  />
-                </Fragment>
-              ) : (
                 <RenderCustomComponent
-                  CustomComponent={CustomSaveButton}
-                  Fallback={<SaveButton />}
+                  CustomComponent={CustomPublishButton}
+                  Fallback={<PublishButton />}
                 />
-              )}
-            </Fragment>
-          )}
-        </TB.Group>
-        <TB.Divider />
-        <TB.Group>
-          {showCopyToLocale && <CopyLocaleData />}
-          {hasCreatePermission && (
-            <React.Fragment>
-              {!disableCreate && (
-                <Fragment>
-                  <TooltipTool tooltip={i18n.t('general:createNew')}>
-                    {editDepth > 1 ? (
-                      <button
-                        className={cn(defaultClassNames)}
-                        href={formatAdminURL({
-                          adminRoute,
-                          path: `/collections/${collectionConfig?.slug}/create`,
-                        })}
-                        id="action-create"
-                        onClick={onDrawerCreateNew}
-                      >
-                        <TB.TopRow />
-                        <TB.IconSlot>
-                          <PlusIcon />
-                        </TB.IconSlot>
-                        <TB.BottomRow />
-                      </button>
-                    ) : (
-                      <a
-                        className={cn(defaultClassNames)}
-                        href={formatAdminURL({
-                          adminRoute,
-                          path: `/collections/${collectionConfig?.slug}/create`,
-                        })}
-                        id="action-create"
-                      >
-                        <TB.TopRow />
-                        <TB.IconSlot>
-                          <PlusIcon />
-                        </TB.IconSlot>
-                        <TB.BottomRow />
-                      </a>
-                    )}
-                  </TooltipTool>
-                </Fragment>
-              )}
-              {collectionConfig.disableDuplicate !== true && isEditing && (
-                <DuplicateDocument
-                  id={id.toString()}
-                  onDuplicate={onDuplicate}
-                  redirectAfterDuplicate={redirectAfterDuplicate}
-                  singularLabel={collectionConfig?.labels?.singular}
-                  slug={collectionConfig?.slug}
-                />
-              )}
-            </React.Fragment>
-          )}
-          {hasDeletePermission && (
-            <DeleteDocument
-              buttonId="action-delete"
-              collectionSlug={collectionConfig?.slug}
-              id={id.toString()}
-              onDelete={onDelete}
-              redirectAfterDelete={redirectAfterDelete}
-              singularLabel={collectionConfig?.labels?.singular}
-              useAsTitle={collectionConfig?.admin?.useAsTitle}
-            />
-          )}
-          {EditMenuItems}
-        </TB.Group>
-      </TB.Wrapper>
-    </TooltipProvider>
+              </Fragment>
+            ) : (
+              <RenderCustomComponent CustomComponent={CustomSaveButton} Fallback={<SaveButton />} />
+            )}
+          </Fragment>
+        )}
+      </TB.Group>
+      <TB.Divider />
+      <TB.Group>
+        {showCopyToLocale && <CopyLocaleData />}
+        {hasCreatePermission && (
+          <React.Fragment>
+            {!disableCreate && (
+              <Fragment>
+                <TooltipTool tooltip={i18n.t('general:createNew')}>
+                  {editDepth > 1 ? (
+                    <button
+                      className={cn(defaultClassNames)}
+                      href={formatAdminURL({
+                        adminRoute,
+                        path: `/collections/${collectionConfig?.slug}/create`,
+                      })}
+                      id="action-create"
+                      onClick={onDrawerCreateNew}
+                    >
+                      <TB.TopRow />
+                      <TB.IconSlot>
+                        <PlusIcon />
+                      </TB.IconSlot>
+                      <TB.BottomRow />
+                    </button>
+                  ) : (
+                    <a
+                      className={cn(defaultClassNames)}
+                      href={formatAdminURL({
+                        adminRoute,
+                        path: `/collections/${collectionConfig?.slug}/create`,
+                      })}
+                      id="action-create"
+                    >
+                      <TB.TopRow />
+                      <TB.IconSlot>
+                        <PlusIcon />
+                      </TB.IconSlot>
+                      <TB.BottomRow />
+                    </a>
+                  )}
+                </TooltipTool>
+              </Fragment>
+            )}
+            {collectionConfig.disableDuplicate !== true && isEditing && (
+              <DuplicateDocument
+                id={id.toString()}
+                onDuplicate={onDuplicate}
+                redirectAfterDuplicate={redirectAfterDuplicate}
+                singularLabel={collectionConfig?.labels?.singular}
+                slug={collectionConfig?.slug}
+              />
+            )}
+          </React.Fragment>
+        )}
+        {hasDeletePermission && (
+          <DeleteDocument
+            buttonId="action-delete"
+            collectionSlug={collectionConfig?.slug}
+            id={id.toString()}
+            onDelete={onDelete}
+            redirectAfterDelete={redirectAfterDelete}
+            singularLabel={collectionConfig?.labels?.singular}
+            useAsTitle={collectionConfig?.admin?.useAsTitle}
+          />
+        )}
+        {EditMenuItems}
+      </TB.Group>
+    </>
   )
 
   //   return (

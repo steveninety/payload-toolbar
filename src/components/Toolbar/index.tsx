@@ -20,7 +20,7 @@ export function ToolbarWrapper({ children }: { children: React.ReactNode }) {
    * For "fixed" to top, use "md:top-[calc(-1*var(--app-header-height))]" on outer-wrapper.
    */
   return (
-    <div className="toolbar__container md:w-16 sticky z-10 top-0 md:h-[calc(100vh-var(--app-header-height))] border-solid border-l border-[var(--theme-elevation-150)]">
+    <div className="toolbar__container md:w-16 sticky z-10 top-0 md:h-[calc(100vh-var(--app-header-height))] bg-[var(--theme-bg)]">
       <div className="toolbar__outer-wrapper w-full md:absolute md:inset-0 md:left-1/2  md:overflow-y-auto scrollbar-hide z-10">
         <div className="toolbar__inner-wrapper flex flex-row md:flex-col px-4 md:px-0  overflow-x-auto md:overflow-x-hidden md:overflow-y-auto z-10 items-center border-b md:border-b-0 md:border-l border-foreground rounded-lg h-fit">
           {children}
@@ -44,7 +44,9 @@ export function Group({ children, gap = true }: { children: React.ReactNode; gap
 }
 
 export function Divider() {
-  return <div className="toolbar__divider md:h-px md:w-full h-full w-px bg-foreground" />
+  return (
+    <div className="toolbar__divider md:h-px md:w-full h-full w-px bg-[var(--theme-elevation-150)]" />
+  )
 }
 
 export function FilledChevronIcon({
@@ -290,14 +292,23 @@ function DropdownTool({ children, dropdownItems }: DropdownToolProps) {
   )
 }
 
-export default function Toolbar(props: DocumentViewClientProps) {
-  const [selectedTool, setSelectedTool] = React.useState<string | null>(null)
-  const [singleSelectValue, setSingleSelectValue] = React.useState<string>('')
-  const [multiSelectValues, setMultiSelectValues] = React.useState<string[]>([])
-  const { t } = useTranslation()
+export default function Toolbar(props: {
+  documentTabs: React.ReactNode
+  children?: React.ReactNode
+}) {
+  const { documentTabs, children } = props
 
-  return <></>
+  return (
+    <TooltipProvider>
+      <Toolbar.Wrapper>
+        <Toolbar.Group gap={false}>{documentTabs}</Toolbar.Group>
+        {children ?? null}
+      </Toolbar.Wrapper>
+    </TooltipProvider>
+  )
 }
+
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 export const defaultClassNames =
   'w-full flex flex-col items-center relative p-1 gap-0 rounded-sm !border-none transition-colors'

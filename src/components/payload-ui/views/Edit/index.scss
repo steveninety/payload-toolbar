@@ -5,6 +5,10 @@
   .collection-edit {
     --gradient: linear-gradient(to left, rgba(0, 0, 0, 0.04) 0%, transparent 100%);
 
+    .document-fields {
+      border-right: 1px solid var(--theme-elevation-150);
+    }
+
     .document-fields__sidebar-fields {
       padding-right: calc(var(--base) * 2)
     }
@@ -52,6 +56,7 @@
       }
 
       position: sticky;
+      border-top: 1px solid var(--theme-elevation-150);
     }
 
     &__form-main {

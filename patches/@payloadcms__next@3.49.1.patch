@@ -48,10 +48,10 @@ index a5f828901721491db41b8190e2ab9491caa71b29..3862f9793f4513a9a6f7c9d398ae3ab5
  /**
   * This function is responsible for rendering
 diff --git a/package.json b/package.json
-index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb9023b56c8e 100644
+index a4451ec42649ba52f06b60576cfc28956784ccdf..a130638cea5e16fa7d8375a8dab68dd70d365316 100644
 --- a/package.json
 +++ b/package.json
-@@ -60,6 +60,36 @@
+@@ -60,6 +60,46 @@
        "import": "./dist/exports/views.js",
        "types": "./dist/exports/views.d.ts",
        "default": "./dist/exports/views.js"
@@ -65,6 +65,16 @@ index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb90
 +      "import": "./dist/views/*/*.js",
 +      "types": "./dist/views/*/*.d.ts",
 +      "default": "./dist/views/*/*.js"
++    },
++    "./views/*/*/*": {
++      "import": "./dist/views/*/*/*.js",
++      "types": "./dist/views/*/*/*.d.ts",
++      "default": "./dist/views/*/*/*.js"
++    },
++    "./views/*/*/*/*": {
++      "import": "./dist/views/*/*/*/*.js",
++      "types": "./dist/views/*/*/*/*.d.ts",
++      "default": "./dist/views/*/*/*/*.js"
 +    },
 +    "./utilities/*": {
 +      "import": "./dist/utilities/*.js",
@@ -85,11 +95,6 @@ index a4451ec42649ba52f06b60576cfc28956784ccdf..543708c1c0ed37b9104ddfae5f6bcb90
 +      "import": "./dist/elements/*/*/index.js",
 +      "types": "./dist/elements/*/*/index.d.ts",
 +      "default": "./dist/elements/*/*/index.js"
-+    },
-+    "./elements/*/*/*": {
-+      "import": "./dist/elements/*/*/*/index.js",
-+      "types": "./dist/elements/*/*/*/index.d.ts",
-+      "default": "./dist/elements/*/*/*/index.js"
      }
    },
    "main": "./dist/index.js",

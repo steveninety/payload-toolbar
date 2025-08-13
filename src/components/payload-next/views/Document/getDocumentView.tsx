@@ -10,11 +10,11 @@ import type React from 'react'
 
 import type { ViewToRender } from './'
 
-import { APIView as DefaultAPIView } from '@payloadcms/next/views/API'
-import { DefaultEditView } from '../../../payload-ui/views/Edit'
+import { APIView as DefaultAPIView } from '@/components/payload-ui/views/API'
+import { DefaultEditView } from '@/components/payload-ui/views/Edit'
 import { UnauthorizedViewWithGutter } from '@payloadcms/next/views/Unauthorized'
 import { VersionView as DefaultVersionView } from '@payloadcms/next/views/Version'
-import { VersionsView as DefaultVersionsView } from '@payloadcms/next/views/Versions'
+import { VersionsView as DefaultVersionsView } from '@/components/payload-ui/views/Versions'
 import { getCustomViewByKey } from '@payloadcms/next/views/Document'
 import { getCustomViewByRoute } from '@payloadcms/next/views/Document'
 
